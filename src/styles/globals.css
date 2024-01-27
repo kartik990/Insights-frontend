@@ -31,3 +31,16 @@ body {
     text-wrap: balance;
   }
 }
+
+body::-webkit-scrollbar {
+  width: 5px;               /* width of the entire scrollbar */
+}
+
+body::-webkit-scrollbar-track {
+  background: #9AD0C2;        
+}
+
+body::-webkit-scrollbar-thumb {
+  background-color: #2D9596;    /* color of the scroll thumb */
+  border-radius: 10px;       /* roundness of the scroll thumb */
+}
