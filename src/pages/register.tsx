@@ -1,10 +1,32 @@
+import { RegisterMutation } from "@/generated/graphql";
+import { registerMutation } from "@/graphql/mutations/userMutations";
+import { setUserObject } from "@/utils/localStroage";
+import { useMutation } from "@apollo/client";
 import { Login } from "@mui/icons-material";
 import { Box, Button, Card, TextField, Typography } from "@mui/material";
 import { Formik } from "formik";
+import { useRouter } from "next/router";
+import { useEffect } from "react";
 
 export default function Register() {
+  const [registerFunc, { data, error, loading }] =
+    useMutation<RegisterMutation>(registerMutation);
+
+  const router = useRouter();
+
+  if (error) console.log("error:", error);
+
+  useEffect(() => {
+    if (data?.register?.user) {
+      setUserObject(data.register.user);
+      router.push("/");
+    }
+  }, [data, router]);
+
+  console.log("data:", data);
+
   return (
-    <div className="w-screen h-screen bg-primary-200 flex justify-center items-center">
+    <div className="w-screen h-[80vh] bg-primary-200 flex justify-center items-center">
       <Card
         className="w-[30%] flex flex-col justify-center items-center px-5 py-8 bg-primary-300 relative"
         variant="elevation"
@@ -16,7 +38,12 @@ export default function Register() {
           initialValues={{ username: "", email: "", password: "" }}
           validate={(values) => {}}
           onSubmit={(values, { setSubmitting }) => {
-            console.log(values);
+            setSubmitting(loading);
+            registerFunc({
+              variables: {
+                options: values,
+              },
+            });
           }}
         >
           {({

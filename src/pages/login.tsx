@@ -2,9 +2,32 @@ import { Login } from "@mui/icons-material";
 import { Box, Button, Card, TextField, Typography } from "@mui/material";
 import { Formik } from "formik";
 
+import { loginMutation } from "@/graphql/mutations/userMutations";
+import { useMutation } from "@apollo/client";
+import { LoginMutation } from "@/generated/graphql";
+import { useRouter } from "next/router";
+import { setUserObject } from "@/utils/localStroage";
+import { useEffect } from "react";
+
 export default function LogIn() {
+  const [loginFunc, { data, error, loading }] =
+    useMutation<LoginMutation>(loginMutation);
+
+  const router = useRouter();
+
+  if (error) console.log("error:", error);
+
+  useEffect(() => {
+    if (data?.login?.user) {
+      setUserObject(data.login.user);
+      router.push("/");
+    }
+  }, [data, router]);
+
+  console.log("data:", data);
+
   return (
-    <div className="w-screen h-screen bg-primary-200 flex justify-center items-center">
+    <div className="w-screen h-[80vh] bg-primary-200 flex justify-center items-center">
       <Card
         className="w-[30%] h-[60%] flex flex-col justify-center items-center px-5 py-2 bg-primary-300 relative"
         variant="elevation"
@@ -14,9 +37,14 @@ export default function LogIn() {
         </Typography>
         <Formik
           initialValues={{ username: "", password: "" }}
-          validate={(values) => {}}
           onSubmit={(values, { setSubmitting }) => {
-            console.log(values);
+            setSubmitting(loading);
+            loginFunc({
+              variables: {
+                usernameOrEmail: values.username,
+                password: values.password,
+              },
+            });
           }}
         >
           {({
@@ -58,7 +86,7 @@ export default function LogIn() {
                   className="text-primary-100 border-primary-200 hover:border-primary-200"
                   disabled={isSubmitting}
                 >
-                  Log in
+                  Log In
                 </Button>
               </Box>
             </form>

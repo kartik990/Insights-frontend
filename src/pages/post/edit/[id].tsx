@@ -1,18 +1,19 @@
+import { Create, Login } from "@mui/icons-material";
 import { Box, Button, Card, TextField, Typography } from "@mui/material";
 import { Formik } from "formik";
 
-export default function ForgotPassword() {
+export default function EditPost() {
   return (
     <div className="w-screen h-[80vh] bg-primary-200 flex justify-center items-center">
       <Card
-        className="w-[30%] flex flex-col justify-center items-center px-5 py-8 bg-primary-300 relative"
+        className="w-[50%] flex flex-col justify-center items-center px-2 py-8 bg-primary-300 relative"
         variant="elevation"
       >
         <Typography className="text-xl mb-5 text-gray-600">
-          Please Enter New Password
+          Edit Post <Create />
         </Typography>
         <Formik
-          initialValues={{ password: "" }}
+          initialValues={{ title: "", text: "" }}
           validate={(values) => {}}
           onSubmit={(values, { setSubmitting }) => {
             console.log(values);
@@ -31,22 +32,36 @@ export default function ForgotPassword() {
             <form onSubmit={handleSubmit} className="flex-col">
               <Box className="flex flex-col gap-5">
                 <TextField
-                  type="password"
-                  name="password"
-                  label="New Password"
+                  id="title"
+                  name="title"
+                  label="Title"
+                  variant="standard"
+                  type="title"
                   onChange={handleChange}
                   onBlur={handleBlur}
-                  value={values.password}
-                  variant="outlined"
+                  value={values.title}
                 />
-                {errors.password && touched.password && errors.password}
+                {errors.title && touched.title && errors.title}
+                <TextField
+                  type="text"
+                  name="text"
+                  label="Text"
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  value={values.text}
+                  variant="outlined"
+                  style={{ width: "500px" }}
+                  multiline
+                  rows={4}
+                />
+                {errors.text && touched.text && errors.text}
                 <Button
                   variant="outlined"
                   type="submit"
                   className="text-primary-100 border-primary-200 hover:border-primary-200"
                   disabled={isSubmitting}
                 >
-                  Reset Password
+                  Submit
                 </Button>
               </Box>
             </form>

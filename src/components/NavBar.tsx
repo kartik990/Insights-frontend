@@ -8,51 +8,83 @@ import Container from "@mui/material/Container";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import { Create, Login, Logout } from "@mui/icons-material";
-
-const pages = ["Products", "Pricing", "Blog"];
-const settings = ["Profile", "Account", "Dashboard", "Logout"];
+import Link from "next/link";
+import { clearLocalStorage, getUserObject } from "@/utils/localStroage";
+import { useRouter } from "next/router";
 
 function NavBar() {
+  const user = getUserObject();
+
+  const router = useRouter();
+
   return (
-    <AppBar position="static" className="bg-primary-100">
+    <AppBar position="sticky" className="bg-primary-100 w-auto">
       <Container maxWidth="xl">
         <Toolbar disableGutters className="flex justify-between">
-          <Box className="flex items-center">
-            <PsychologyIcon
-              sx={{ display: { xs: "none", md: "flex" }, mr: 1 }}
-            />
-            <Typography
-              variant="h6"
-              noWrap
-              component="a"
-              href="#app-bar-with-responsive-menu"
-              sx={{
-                mr: 2,
-                display: { xs: "none", md: "flex" },
-                fontFamily: "monospace",
-                fontWeight: 700,
-                letterSpacing: ".3rem",
-                color: "inherit",
-                textDecoration: "none",
-              }}
-            >
-              Insights
-            </Typography>
-          </Box>
+          <Link href="/">
+            <Box className="flex items-center">
+              <PsychologyIcon
+                sx={{ display: { xs: "none", md: "flex" }, mr: 1 }}
+              />
+              <Typography
+                variant="h6"
+                noWrap
+                component="a"
+                href="#app-bar-with-responsive-menu"
+                sx={{
+                  mr: 2,
+                  display: { xs: "none", md: "flex" },
+                  fontFamily: "monospace",
+                  fontWeight: 700,
+                  letterSpacing: ".3rem",
+                  color: "inherit",
+                  textDecoration: "none",
+                }}
+              >
+                Insights
+              </Typography>
+            </Box>
+          </Link>
           <Box className="flex items-center gap-5 text-black">
-            <Button variant="contained" className="hover:bg-primary-200 gap-2">
-              <Create />
-              Create Post
-            </Button>
-            {/* <Button variant="contained" className="hover:bg-primary-200 gap-3">
-              <Login />
-              Log in
-            </Button> */}
-            <Button variant="contained" className="hover:bg-primary-200 gap-3">
-              Log out
-              <Logout />
-            </Button>
-            <Avatar className="bg-primary-300 text-[#555555]">K</Avatar>
+            <Link href="/post/create">
+              <Button
+                variant="contained"
+                className="hover:bg-primary-200 gap-2"
+              >
+                <Create />
+                Create Post
+              </Button>
+            </Link>
+            {user ? (
+              <>
+                <Button
+                  variant="contained"
+                  className="hover:bg-primary-200 gap-3"
+                  onClick={() => {
+                    router.push("/login");
+                    clearLocalStorage();
+                  }}
+                >
+                  Log out
+                  <Logout />
+                </Button>
+                <Avatar className="bg-primary-300 text-[#555555]">
+                  {user.username[0]}
+                </Avatar>
+              </>
+            ) : (
+              <Button
+                variant="contained"
+                className="hover:bg-primary-200 gap-3"
+                onClick={() => {
+                  router.push("/login");
+                  clearLocalStorage();
+                }}
+              >
+                <Login />
+                Log in
+              </Button>
+            )}
           </Box>
         </Toolbar>
       </Container>
